@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Linting
+        run: npm run lint
+
+      - name: Run Security Scan
+        run: npx trivy fs .
+
+      - name: Build Docker Image
+        run: docker build -t nodejs-api .
+
+      - name: Log in to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker Image to ECR
+        run: |
+          REPO_URI=$(aws ecr describe-repositories --query 'repositories[?repositoryName==`nodejs-api`].repositoryUri' --output text)
+          docker tag nodejs-api:latest $REPO_URI:latest
+          docker push $REPO_URI:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Terraform Infrastructure
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Deploy to AWS ECS (Fargate)
+        run: |
+          aws ecs update-service --cluster nodejs-api-cluster --service nodejs-api-service --force-new-deployment
+
+      - name: Verify Deployment
+        run: curl -f http://your-alb-dns-name
