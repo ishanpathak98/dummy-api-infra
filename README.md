@@ -5,7 +5,7 @@ This repository contains the infrastructure and CI/CD pipeline setup for a **Nod
 
 ---
 
-## **Architecture**
+## 📌 **Architecture**
 ### **Key Components**
 1. **AWS ECS (Fargate)** - Deploys and manages the containerized Node.js API.
 2. **AWS ALB (Application Load Balancer)** - Handles routing and load balancing.
@@ -20,54 +20,23 @@ This repository contains the infrastructure and CI/CD pipeline setup for a **Nod
 
 ---
 
-## **CI/CD Pipeline** (GitHub Actions)
-### **Workflow Steps**
-1. **Linting & Code Quality**
-   - ESLint for code formatting.
-   - SonarQube for static code analysis.
-2. **Security Scanning**
-   - Trivy for container vulnerability scanning.
-   - OWASP dependency check.
-3. **Docker Build & Push**
-   - Dockerize the Node.js API.
-   - Push the image to AWS ECR.
-4. **Blue-Green Deployment on AWS ECS**
-   - Deploy the new version while keeping the old one active.
-   - Switch traffic using AWS ALB when deployment is verified.
-5. **Monitoring & Alerts**
-   - Integrate Prometheus & Grafana.
-   - Set up CloudWatch alerts for API health.
-
----
-
-## **Infrastructure as Code (Terraform)**
-### **Terraform Modules**
-- **VPC & Networking**
-- **ECS Cluster & Task Definitions**
-- **ALB, Target Groups & WAF Rules**
-- **AWS Cognito for Authentication**
-- **CloudWatch Logging**
-- **ECR for Image Storage**
-
----
-
-## **Architecture Diagram**
-_A detailed architecture diagram showcasing the infrastructure components and their interactions will be included._
-
----
-
-## **Repository Structure**
+## 📂 **Repository Structure**
 ```plaintext
 ├── terraform/             # Terraform scripts for AWS infrastructure
-│   ├── vpc.tf            # VPC & networking setup
-│   ├── ecs.tf            # ECS cluster & task definitions
-│   ├── alb.tf            # Load Balancer setup
-│   ├── waf.tf            # WAF rate limiting rules
-│   ├── cognito.tf        # Authentication setup
-│   ├── cloudwatch.tf     # Monitoring setup
-│   ├── ecr.tf            # AWS ECR for storing Docker images
-│   ├── outputs.tf        # Terraform output values
-│   ├── main.tf           # Main Terraform entry point
+│   ├── provider.tf       # AWS Provider configuration
+│   ├── variables.tf      # Terraform variables
+│   ├── environments/     # Environment-specific configurations
+│   │   ├── prod/         # Production environment setup
+│   │   │   ├── main.tf   # AWS provider setup for prod
+│   ├── modules/          # Modular Terraform components
+│   │   ├── networking/   # VPC, Subnets, Security Groups
+│   │   │   ├── main.tf   # VPC Configuration
+│   │   ├── ecs/          # ECS Cluster and Task Definitions
+│   │   │   ├── main.tf   # ECS Configuration
+│   │   ├── api_gateway/  # API Gateway setup
+│   │   │   ├── main.tf   # API Gateway Configuration
+│   │   ├── monitoring/   # CloudWatch, Prometheus, Grafana
+│   │   │   ├── main.tf   # Monitoring setup
 │
 ├── .github/workflows/     # GitHub Actions CI/CD Pipeline
 │   ├── ci-cd.yml         # CI/CD workflow file
@@ -80,27 +49,43 @@ _A detailed architecture diagram showcasing the infrastructure components and th
 
 ---
 
-## **Setup & Deployment**
+## 🚀 **Setup & Deployment**
+### **Prerequisites**
+- Install **Terraform**
+- Configure **AWS CLI** with necessary IAM permissions
+
+### **Deployment Steps**
 1. **Clone the Repository:**
    ```sh
    git clone https://github.com/your-username/nodejs-api-architecture.git
    cd nodejs-api-architecture
    ```
-2. **Deploy Infrastructure using Terraform:**
+2. **Initialize Terraform:**
    ```sh
    terraform init
+   ```
+3. **Apply Terraform Configuration:**
+   ```sh
    terraform apply -auto-approve
    ```
-3. **Push Code & Trigger CI/CD Pipeline:**
+4. **Push Code & Trigger CI/CD Pipeline:**
    - Commit & push your code.
    - GitHub Actions will build, test, scan, and deploy automatically.
 
 ---
 
-## **Next Steps**
+## 🛠 **Modules Description**
+- **Networking**: Sets up **VPC, subnets, security groups**.
+- **ECS**: Configures **ECS Cluster, Services, Task Definitions**.
+- **API Gateway**: Manages API routing & integration with ECS.
+- **Monitoring**: Includes **CloudWatch, Prometheus, Grafana** for observability.
+
+---
+
+## 📌 **Next Steps**
 - Implement the architecture in AWS.
 - Test API endpoints and security configurations.
 - Optimize infrastructure costs and performance.
 
----
+_Stay tuned for updates!_ 🚀
 
