@@ -25,3 +25,19 @@ variable "tags" {
     Terraform   = "true"
   }
 }
+
+variable "subnets" {
+  description = "List of subnets for ECS"
+  type        = list(string)
+}
+
+variable "security_groups" {
+  description = "Security groups for ECS services"
+  type        = list(string)
+}
+
+variable "grafana_admin_password" {
+  description = "Admin password for Grafana"
+  type        = string
+  sensitive   = true
+}
